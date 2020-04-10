@@ -1,0 +1,9 @@
+colorama
+discord.py
+git+https://github.com/skullbite/disputils
+aiohttp
+requests
+pymongo
+ast
+
+ 

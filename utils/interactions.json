@@ -1,0 +1,31 @@
+{"cuddle": {"color": 4149685, "responses": ["{0} cuddles {1}", "{0} cuddles {1} lovingly", "{0} sits {1} in their lap and cuddles them lovingly"]}, "hug": {"color": 13786770, "responses": ["{0} hugs {1}",
+    "{1} gets a tight hug from {0}",
+    "{1} is getting a hug from {0}",
+    "Is {0} hugging {1}? They sure are!",
+    "{0} hugs {1} in a lovable way",
+    "{0} hugs {1} with a very warm smile",
+    "{0} hugs {1} in an attempt to cheer them up",
+    "{0} sneaks up behind {1} and gives him/her a surprise hug!",
+    "{0} lunges at {1}, wrapping his/her arms around lovingly!",
+    "{1} wasn't suspecting anything at first, but then suddenly {0} appears and hugs him/her!",
+    "{0} blushes a little bit, carefully approaching {1} and giving him/her a tender hug.",
+    "{0} suddenly yells out loud; \"Tactical hug incoming!\".",
+    "{0} lifts {1} from the ground and hugs them tightly.",
+    "{0} and {1} run towards eachother, arms open, not unlike the classic grassy-field-reunion scene. They meet in the middle with a strong embrace.",
+    "{0} scoots closer over to {1} on a park bench, then wraps his/her arms around the unsuspecting hug victim.",
+    "{0} confidently steps forward, giving {1} a tight hug.",
+    "{0} gives {1} a big ol' hug.",
+    "{1} is suddenly hugged by {0}!"]}, "kiss": {"color": 13786770, "responses":
+           ["{0} kisses {1}",
+           "{0} gives {1} a kiss",
+           "{1} gets a surprise kiss from {0}",
+           "{0} appears to be kissing {1}. Lets leave them to it :3"]}, "boop": {"color": 6953882, "responses": ["{0} gave {1}'s snout a nuzzling~", "{0} pushed their snout up against {1}'s."]}, "lick": {"color": 3046706, "responses": [
+           "{0} licked {1} to the point where he/she murrred/purred",
+           "{0} licked {1} in the name of love. Murr!",
+           "{0} was feeling a little playful and decided to lick {1}",
+           "{0} slides over to {1} and licks them",
+           "{0} nibbles and licks {1} playfully",
+           "{0} slides over to {1} and licks and cuddles {1}"
+          ]}, "hold": {"color": 0, "responses": ["{0} wrapped their arms around {1}, never wanting to let go of them..."]}, "propose": {"color": 0, "responses": ["OWO"]}, "straight": {"color": 2444566, "responses": ["Have fun pawing off"]}, "bulge": {"color": 2444566, "responses": ["What's this~?"]},
+          "gay": {"color": 2444566, "responses": ["🌈"]}, "dicks": {"color": 700, "repsonses": ["eggplant emoji"]}}
+    
