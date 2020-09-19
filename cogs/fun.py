@@ -1,10 +1,11 @@
 from discord.ext import commands
 from utils.apis import *
 
+
 class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(aliases=["e9"])
     async def e926(self, ctx, tags: str):
         """Searches for posts from e926.net"""
@@ -22,7 +23,7 @@ class Fun(commands.Cog):
         if user == ctx.author:
             return await ctx.send("Maybe someone other than yourself?")
         await furry.bot(ctx, "hug", user)
-    
+
     @commands.command()
     @commands.guild_only()
     async def cuddle(self, ctx, user: discord.User):
@@ -52,7 +53,7 @@ class Fun(commands.Cog):
         if user == ctx.author:
             return await ctx.send("Maybe someone other than yourself?")
         await furry.bot(ctx, "boop", user)
-    
+
     @commands.command()
     @commands.guild_only()
     async def hold(self, ctx, user: discord.User):
@@ -80,12 +81,16 @@ class Fun(commands.Cog):
             return await ctx.send("thanks for the pats..")
         if user == ctx.author:
             return await ctx.send("Maybe someone other than yourself?")
-        post = await e621(tags="head_pat", NSFW=False, limit=1, filetype="jpg", random_search=True)
-        embed = discord.Embed(color=self.bot.color, description=f"{ctx.author.name} pat {user.name} on the head for being a cute heck")
-        embed.set_image(url=post['image'])
+        post = await e621(
+            tags="head_pat", NSFW=False, limit=1, filetype="jpg", random_search=True
+        )
+        embed = discord.Embed(
+            color=self.bot.color,
+            description=f"{ctx.author.name} pat {user.name} on the head for being a cute heck",
+        )
+        embed.set_image(url=post["image"])
         await ctx.send(embed=embed)
 
 
 def setup(bot):
     bot.add_cog(Fun(bot))
-    

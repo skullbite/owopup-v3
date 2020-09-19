@@ -6,10 +6,14 @@ import json, os, datetime, discord
 
 
 def warning(text):
-    print('\033[1m' + Fore.RED + text + Style.RESET_ALL)
+    print("\033[1m" + Fore.RED + text + Style.RESET_ALL)
 
-config = json.load(open("config.json"), object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+
+config = json.load(
+    open("config.json"), object_hook=lambda d: namedtuple("X", d.keys())(*d.values())
+)
 db = MongoClient(config.mongostr).owopup
+
 
 def get_prefix(bot, msg):
     if not msg.guild:
@@ -20,13 +24,15 @@ def get_prefix(bot, msg):
         if not prefix:
             return commands.when_mentioned_or("owo ")(bot, msg)
         return commands.when_mentioned_or(prefix)(bot, msg)
-    except:
+    except Exception:
         return commands.when_mentioned_or("owo ")(bot, msg)
-        
+
 
 class pupper(commands.AutoShardedBot):
     def __init__(self, *args, **kwargs):
-        super().__init__(command_prefix=get_prefix, case_insenitive=True, *args, **kwargs)
+        super().__init__(
+            command_prefix=get_prefix, case_insenitive=True, *args, **kwargs
+        )
         self.color = 2444566
         self.db = db
         self.config = config
@@ -35,6 +41,7 @@ class pupper(commands.AutoShardedBot):
         self.abuse = Counter()
         self.settings_cache = {}
         self.uptime = datetime.datetime.utcnow()
+
         class settings:
             def get(id: int):
                 try:
@@ -42,35 +49,46 @@ class pupper(commands.AutoShardedBot):
                 except:
                     settings = self.db.settings.find_one({"id": id})
                     if not settings:
-                        defaults = {"modlog": None, "mutedrole": None, "prefix": None, "images": False, "id": id}
-                        self.db.settings.insert_one(defaults) # AAA I HATE THIS
+                        defaults = {
+                            "modlog": None,
+                            "mutedrole": None,
+                            "prefix": None,
+                            "images": False,
+                            "id": id,
+                        }
+                        self.db.settings.insert_one(defaults)  # AAA I HATE THIS
                         return self.db.settings.find_one({"id": id})
                     return settings
 
             def init_settings(guild: discord.Guild):
                 if self.db.settings.find_one({"id": guild.id}):
                     raise Exception("Guild already has settings.")
-                defaults = {"modlog": None, "mutedrole": None, "prefix": None, "images": False, "id": guild.id}
+                defaults = {
+                    "modlog": None,
+                    "mutedrole": None,
+                    "prefix": None,
+                    "images": False,
+                    "id": guild.id,
+                }
                 self.db.settings.insert_one(defaults)
                 self.cache()
 
-            
-            
             def edit(guild: discord.Guild, key, value):
                 self.db.settings.update({"id": guild.id}, {"$set": {key: value}})
                 self.cache()
-        
+
         def cache():
             self.settings_cache = {}
             for x in self.db.settings.find():
                 self.settings_cache[str(x["id"])] = x
+
         self.cache = cache
-        self.settings = settings  
-        #class modlog:
+        self.settings = settings
+        # class modlog:
         #    def get_cases(id: int):
         #        cases = []
         #        for x in bot.db.modlogs.find({"guild_id": id}):
-        #            cases.append(x)  
+        #            cases.append(x)
         #        return cases
 
         #    def make_case(guild)
@@ -84,11 +102,21 @@ class pupper(commands.AutoShardedBot):
             def create(user: discord.User, reason: str, revoke_at=15, permanent=False):
                 if self.db.blacklist.find_one({"id": user.id}):
                     raise Exception("User is already in blacklist.")
-                revoke_at = datetime.datetime.utcnow() + datetime.timedelta(minutes=revoke_at)
+                revoke_at = datetime.datetime.utcnow() + datetime.timedelta(
+                    minutes=revoke_at
+                )
                 if permanent:
                     revoke_at = 0
-                self.db.blacklist.insert_one({"id": user.id, "reason": reason, "at": datetime.datetime.utcnow(), "permanent": permanent, "revoke_at": revoke_at})
-            
+                self.db.blacklist.insert_one(
+                    {
+                        "id": user.id,
+                        "reason": reason,
+                        "at": datetime.datetime.utcnow(),
+                        "permanent": permanent,
+                        "revoke_at": revoke_at,
+                    }
+                )
+
             def remove(user: discord.User):
                 if not self.db.blacklist.find_one({"id": user.id}):
                     raise Exception("No Entry Found.")
@@ -106,19 +134,22 @@ class pupper(commands.AutoShardedBot):
 
                 if not brief:
                     if days:
-                       fmt = '{d} days, {h} hours, {m} minutes, and {s} seconds'
+                        fmt = "{d} days, {h} hours, {m} minutes, and {s} seconds"
                     else:
-                       fmt = '{h} hours, {m} minutes, and {s} seconds'
+                        fmt = "{h} hours, {m} minutes, and {s} seconds"
                 else:
-                    fmt = '{h}h {m}m {s}s'
+                    fmt = "{h}h {m}m {s}s"
                 if days:
-                    fmt = '{d}d ' + fmt
+                    fmt = "{d}d " + fmt
 
                 return fmt.format(d=days, h=hours, m=minutes, s=seconds)
 
         self.blacklist = blacklist
 
+
 bot = pupper()
+
+
 @bot.event
 async def on_message(msg):
     if not bot.is_ready() or msg.author.bot:
@@ -127,17 +158,29 @@ async def on_message(msg):
     if ctx.command:
         entry = bot.db.blacklist.find_one({"id": ctx.author.id})
         if entry:
-            if entry["revoke_at"] <= datetime.datetime.utcnow() and not entry["permanent"]:
+            if (
+                entry["revoke_at"] <= datetime.datetime.utcnow()
+                and not entry["permanent"]
+            ):
                 bot.blacklist.remove(msg.author)
                 return await bot.process_commands(msg)
 
-            timer = f"Revoke in: {bot.blacklist.timestring(time=entry['revoke_at'], brief=True)}" if not entry["permanent"] else "**This case is permanent.**"
-            return await ctx.send(f"You've been blacklisted.\nReason: {entry['reason']}\n{timer}")
-        
+            timer = (
+                f"Revoke in: {bot.blacklist.timestring(time=entry['revoke_at'], brief=True)}"
+                if not entry["permanent"]
+                else "**This case is permanent.**"
+            )
+            return await ctx.send(
+                f"You've been blacklisted.\nReason: {entry['reason']}\n{timer}"
+            )
+
     if msg.content == f"<@!{bot.user.id}>" or msg.content == f"<@{bot.user.id}>":
-        await ctx.send(f"Huh? Did you want something..? My help command can be ran with `{bot.command_prefix(bot, msg)[2]}help`")
-    
+        await ctx.send(
+            f"Huh? Did you want something..? My help command can be ran with `{bot.command_prefix(bot, msg)[2]}help`"
+        )
+
     await bot.process_commands(msg)
+
 
 @bot.event
 async def on_message_edit(b, a):
@@ -147,11 +190,15 @@ async def on_message_edit(b, a):
     if ctx.command:
         entry = bot.db.blacklist.find_one({"id": ctx.author.id})
         if entry:
-            if entry["revoke_at"] <= datetime.datetime.utcnow() and not entry["permanent"]:
+            if (
+                entry["revoke_at"] <= datetime.datetime.utcnow()
+                and not entry["permanent"]
+            ):
                 bot.blacklist.remove(ctx.author)
                 return await bot.process_commands(a)
             return
     await bot.process_commands(a)
+
 
 print("Getting ready...")
 for x in os.listdir("cogs"):
@@ -166,4 +213,3 @@ for x in os.listdir("cogs"):
 
 
 bot.run(config.token)
-
