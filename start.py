@@ -200,6 +200,7 @@ async def on_message_edit(b, a):
     await bot.process_commands(a)
 
 
+    # Starting up message, loading cogs
 print("Getting ready...")
 for x in os.listdir("cogs"):
     if not x.endswith(".py"):
@@ -208,6 +209,7 @@ for x in os.listdir("cogs"):
     try:
         bot.load_extension(f"cogs.{file}")
         print(f"Loaded {file}")
+        # if something breaks, catch it 
     except Exception as e:
         warning(f"Failed to load {file}: {e}")
 
